@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.system.mapper.PatientImgInfoMapper">
+    
+    <resultMap type="PatientImgInfo" id="PatientImgInfoResult">
+        <result property="id"    column="id"    />
+        <result property="seeDoctorId"    column="see_doctor_id"    />
+        <result property="bucket"    column="bucket"    />
+        <result property="objName"    column="obj_name"    />
+        <result property="classificationId"    column="classification_id"    />
+        <result property="classificationName"    column="classification_name"    />
+        <result property="dataId"    column="data_id"    />
+        <result property="sortnum"    column="sortnum"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="ocrStr"    column="ocr_str"    />
+        <result property="receiveId"    column="receive_id"    />
+        <result property="isAuto"    column="is_auto"    />
+        <result property="isEncrypted"    column="is_encrypted"    />
+        <result property="sourceId"    column="source_id"    />
+        <result property="isValid"    column="is_valid"    />
+    </resultMap>
+
+    <sql id="selectPatientImgInfoVo">
+        select id, see_doctor_id, bucket, obj_name, classification_id, data_id, sortnum, create_time, ocr_str, receive_id, is_auto, is_encrypted, source_id, is_valid from patient_img_info
+    </sql>
+
+    <select id="selectPatientImgInfoList" parameterType="PatientImgInfo" resultMap="PatientImgInfoResult">
+        <include refid="selectPatientImgInfoVo"/>
+        <where>  
+            <if test="seeDoctorId != null  and seeDoctorId != ''"> and see_doctor_id = #{seeDoctorId}</if>
+            <if test="bucket != null  and bucket != ''"> and bucket = #{bucket}</if>
+            <if test="objName != null  and objName != ''"> and obj_name like concat('%', #{objName}, '%')</if>
+            <if test="classificationId != null  and classificationId != ''"> and classification_id = #{classificationId}</if>
+            <if test="dataId != null  and dataId != ''"> and data_id = #{dataId}</if>
+            <if test="sortnum != null "> and sortnum = #{sortnum}</if>
+            <if test="ocrStr != null  and ocrStr != ''"> and ocr_str = #{ocrStr}</if>
+            <if test="receiveId != null  and receiveId != ''"> and receive_id = #{receiveId}</if>
+            <if test="isAuto != null "> and is_auto = #{isAuto}</if>
+            <if test="isEncrypted != null "> and is_encrypted = #{isEncrypted}</if>
+            <if test="sourceId != null "> and source_id = #{sourceId}</if>
+            <if test="isValid != null "> and is_valid = #{isValid}</if>
+        </where>
+    </select>
+    
+    <select id="selectPatientImgInfoById" parameterType="String" resultMap="PatientImgInfoResult">
+        <include refid="selectPatientImgInfoVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectPatientImgInfoByseeDoctorId" parameterType="String" resultMap="PatientImgInfoResult">
+        SELECT
+            a.id,
+            a.see_doctor_id,
+            a.bucket,
+            a.obj_name,
+            a.classification_id,
+            a.data_id,
+            a.sortnum,
+            a.create_time,
+            a.ocr_str,
+            a.receive_id,
+            a.is_auto,
+            a.is_encrypted,
+            a.source_id,
+            a.is_valid,b.classification_name
+        FROM
+            patient_img_info  a LEFT JOIN t_classification b on a.classification_id =b.id
+        where see_doctor_id = #{seeDoctorId}
+
+        order  by sortnum
+
+
+    </select>
+
+    <select id="selectPatientImgInfoByClassificationIds" resultMap="PatientImgInfoResult">
+        select a.*,b.classification_name from patient_img_info a inner join (
+            select * from  t_classification where ids like CONCAT(#{ids},'%')
+        ) b on a.classification_id = b.id
+        where a.see_doctor_id = #{seeDoctorId} order  by sortnum
+    </select>
+
+    <insert id="insertPatientImgInfo" parameterType="PatientImgInfo">
+        insert into patient_img_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="seeDoctorId != null">see_doctor_id,</if>
+            <if test="bucket != null">bucket,</if>
+            <if test="objName != null">obj_name,</if>
+            <if test="classificationId != null">classification_id,</if>
+            <if test="dataId != null">data_id,</if>
+            <if test="sortnum != null">sortnum,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="ocrStr != null">ocr_str,</if>
+            <if test="receiveId != null">receive_id,</if>
+            <if test="isAuto != null">is_auto,</if>
+            <if test="isEncrypted != null">is_encrypted,</if>
+            <if test="sourceId != null">source_id,</if>
+            <if test="isValid != null">is_valid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="seeDoctorId != null">#{seeDoctorId},</if>
+            <if test="bucket != null">#{bucket},</if>
+            <if test="objName != null">#{objName},</if>
+            <if test="classificationId != null">#{classificationId},</if>
+            <if test="dataId != null">#{dataId},</if>
+            <if test="sortnum != null">#{sortnum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="ocrStr != null">#{ocrStr},</if>
+            <if test="receiveId != null">#{receiveId},</if>
+            <if test="isAuto != null">#{isAuto},</if>
+            <if test="isEncrypted != null">#{isEncrypted},</if>
+            <if test="sourceId != null">#{sourceId},</if>
+            <if test="isValid != null">#{isValid},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePatientImgInfo" parameterType="PatientImgInfo">
+        update patient_img_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="seeDoctorId != null">see_doctor_id = #{seeDoctorId},</if>
+            <if test="bucket != null">bucket = #{bucket},</if>
+            <if test="objName != null">obj_name = #{objName},</if>
+            <if test="classificationId != null">classification_id = #{classificationId},</if>
+            <if test="dataId != null">data_id = #{dataId},</if>
+            <if test="sortnum != null">sortnum = #{sortnum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="ocrStr != null">ocr_str = #{ocrStr},</if>
+            <if test="receiveId != null">receive_id = #{receiveId},</if>
+            <if test="isAuto != null">is_auto = #{isAuto},</if>
+            <if test="isEncrypted != null">is_encrypted = #{isEncrypted},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+            <if test="isValid != null">is_valid = #{isValid},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePatientImgInfoById" parameterType="String">
+        delete from patient_img_info where id = #{id}
+    </delete>
+
+    <delete id="deletePatientImgInfoByIds" parameterType="String">
+        delete from patient_img_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="listDataByImgIds" resultMap="PatientImgInfoResult">
+        SELECT * from patient_img_info a
+        inner join (
+            <foreach collection="ids" item="item" index="idx" separator="union all">
+                select #{idx} as sornum,#{item} as id
+            </foreach>
+        ) b on a.id = b.id
+        where 1=1
+        and a.see_doctor_id = #{seeDoctorId}
+        order by b.sornum
+    </select>
+</mapper>

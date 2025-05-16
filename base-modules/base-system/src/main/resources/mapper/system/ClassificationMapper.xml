@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.system.mapper.ClassificationMapper">
+    
+    <resultMap type="Classification" id="ClassificationResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="classificationName"    column="classification_name"    />
+        <result property="classificationType"    column="classification_type"    />
+        <result property="ids"    column="ids"    />
+        <result property="sortnum"    column="sortnum"    />
+        <result property="globalSort"    column="global_sort"    />
+        <result property="isRule"    column="is_rule"    />
+        <result property="isMust"    column="is_must"    />
+        <result property="level"    column="level"    />
+        <result property="direction"    column="direction"    />
+        <result property="isDenoise"    column="is_denoise"    />
+        <result property="isColorful"    column="is_colorful"    />
+        <result property="nodesize"    column="nodesize"    />
+        <result property="minpercent"    column="minpercent"    />
+        <result property="maxpercent"    column="maxpercent"    />
+        <result property="isDesensitized"    column="is_desensitized"    />
+    </resultMap>
+
+    <sql id="selectClassificationVo">
+        SELECT * FROM t_classification
+    </sql>
+
+    <select id="selectClassificationList" parameterType="Classification" resultMap="ClassificationResult">
+        <include refid="selectClassificationVo"/>
+        <where>  
+            <if test="classificationName != null  and classificationName != ''"> and classification_name like concat('%', #{classificationName}, '%')</if>
+            <if test="isRule != null "> and is_rule = #{isRule}</if>
+            <if test="isDesensitized != null "> and is_desensitized = #{isDesensitized}</if>
+        </where>
+        order by sortnum
+    </select>
+    
+    <select id="selectClassificationById" parameterType="String" resultMap="ClassificationResult">
+        <include refid="selectClassificationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertClassification" parameterType="Classification">
+        insert into t_classification
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="classificationName != null">classification_name,</if>
+            <if test="classificationType != null">classification_type,</if>
+            <if test="ids != null">ids,</if>
+            <if test="sortnum != null">sortnum,</if>
+            <if test="globalSort != null">global_sort,</if>
+            <if test="isRule != null">is_rule,</if>
+            <if test="isMust != null">is_must,</if>
+            <if test="level != null">level,</if>
+            <if test="direction != null">direction,</if>
+            <if test="isDenoise != null">is_denoise,</if>
+            <if test="isColorful != null">is_colorful,</if>
+            <if test="nodesize != null">nodesize,</if>
+            <if test="minpercent != null">minpercent,</if>
+            <if test="maxpercent != null">maxpercent,</if>
+            <if test="isDesensitized != null">is_desensitized,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="classificationName != null">#{classificationName},</if>
+            <if test="classificationType != null">#{classificationType},</if>
+            <if test="ids != null">#{ids},</if>
+            <if test="sortnum != null">#{sortnum},</if>
+            <if test="globalSort != null">#{globalSort},</if>
+            <if test="isRule != null">#{isRule},</if>
+            <if test="isMust != null">#{isMust},</if>
+            <if test="level != null">#{level},</if>
+            <if test="direction != null">#{direction},</if>
+            <if test="isDenoise != null">#{isDenoise},</if>
+            <if test="isColorful != null">#{isColorful},</if>
+            <if test="nodesize != null">#{nodesize},</if>
+            <if test="minpercent != null">#{minpercent},</if>
+            <if test="maxpercent != null">#{maxpercent},</if>
+            <if test="isDesensitized != null">#{isDesensitized},</if>
+         </trim>
+    </insert>
+
+    <update id="updateClassification" parameterType="Classification">
+        update t_classification
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="classificationName != null">classification_name = #{classificationName},</if>
+            <if test="classificationType != null">classification_type = #{classificationType},</if>
+            <if test="ids != null">ids = #{ids},</if>
+            <if test="sortnum != null">sortnum = #{sortnum},</if>
+            <if test="globalSort != null">global_sort = #{globalSort},</if>
+            <if test="isRule != null">is_rule = #{isRule},</if>
+            <if test="isMust != null">is_must = #{isMust},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="direction != null">direction = #{direction},</if>
+            <if test="isDenoise != null">is_denoise = #{isDenoise},</if>
+            <if test="isColorful != null">is_colorful = #{isColorful},</if>
+            <if test="nodesize != null">nodesize = #{nodesize},</if>
+            <if test="minpercent != null">minpercent = #{minpercent},</if>
+            <if test="maxpercent != null">maxpercent = #{maxpercent},</if>
+            <if test="isDesensitized != null">is_desensitized = #{isDesensitized},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteClassificationById" parameterType="String">
+        delete from t_classification where id = #{id}
+    </delete>
+
+    <delete id="deleteClassificationByIds" parameterType="String">
+        delete from t_classification where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectClassificationTreeData" parameterType="String" resultMap="ClassificationResult">
+        <![CDATA[
+        SELECT
+            a.*,
+            case when c.img_nums  is null then 0 else c.img_nums  end as img_nums
+        FROM
+            t_classification a
+                INNER JOIN (
+                SELECT DISTINCT
+                    SUBSTRING_INDEX( SUBSTRING_INDEX( b.ids, ',', c.help_topic_id + 1 ), ',',- 1 ) AS classification_id
+                FROM
+                    patient_img_info a
+                        LEFT JOIN t_classification b ON a.classification_id = b.id
+                        LEFT JOIN mysql.help_topic c ON c.help_topic_id < ( length( b.ids )- length( REPLACE ( b.ids, ',', '' ))+ 1 )
+                        LEFT JOIN ( SELECT classification_id, count(*) AS cnt FROM patient_img_info a GROUP BY classification_id ) d ON a.classification_id = d.classification_id
+                WHERE
+                    b.ids IS NOT NULL
+                  AND a.see_doctor_id = #{seeDoctorId}
+            ) b ON a.id = b.classification_id
+                LEFT JOIN ( SELECT classification_id, count(*) AS img_nums FROM patient_img_info a WHERE see_doctor_id = #{seeDoctorId} AND is_valid = 1 GROUP BY classification_id ) c ON a.id = c.classification_id
+        ORDER BY
+            a.sortnum
+        ]]>
+    </select>
+
+    <select id="selectClassificationByParentId" parameterType="String" resultMap="ClassificationResult">
+        <![CDATA[
+        SELECT
+            *
+        FROM
+            t_classification a where parent_id = #{parentId} and id != 99 order by sortnum
+
+        ]]>
+    </select>
+
+</mapper>

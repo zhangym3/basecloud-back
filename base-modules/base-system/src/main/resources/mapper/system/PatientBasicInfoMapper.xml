@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.system.mapper.PatientBasicInfoMapper">
+    
+    <resultMap type="PatientBasicInfo" id="PatientBasicInfoResult">
+        <result property="id"    column="id"    />
+        <result property="seeDoctorId"    column="see_doctor_id"    />
+        <result property="hospitalizationId"    column="hospitalization_id"    />
+        <result property="medicalRecordNum"    column="medical_record_num"    />
+        <result property="hospitalizationCount"    column="hospitalization_count"    />
+        <result property="name"    column="name"    />
+        <result property="healthcardNo"    column="healthcard_no"    />
+        <result property="gender"    column="gender"    />
+        <result property="phone"    column="phone"    />
+        <result property="contactName"    column="contact_name"    />
+        <result property="contactRelationship"    column="contact_relationship"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="nationality"    column="nationality"    />
+        <result property="idCardType"    column="id_card_type"    />
+        <result property="idCardNum"    column="id_card_num"    />
+        <result property="admissionTime"    column="admission_time"    />
+        <result property="admissionDepartmentId"    column="admission_department_id"    />
+        <result property="admissionDepartmentName"    column="admission_department_name"    />
+        <result property="admissionWardName"    column="admission_ward_name"    />
+        <result property="dischargeTime"    column="discharge_time"    />
+        <result property="dischargeDepartmentId"    column="discharge_department_id"    />
+        <result property="dischargeDepartmentName"    column="discharge_department_name"    />
+        <result property="dischargeWardName"    column="discharge_ward_name"    />
+        <result property="dischargeMethod"    column="discharge_method"    />
+        <result property="recordStatus"    column="record_status"    />
+        <result property="currentStep"    column="current_step"    />
+        <result property="localFilingTime"    column="local_filing_time"    />
+        <result property="localFilingUserId"    column="local_filing_user_id"    />
+        <result property="localFilingUserName"    column="local_filing_user_name"    />
+        <result property="hisFilingTime"    column="his_filing_time"    />
+        <result property="hisFilingUserId"    column="his_filing_user_id"    />
+        <result property="hisFilingUserName"    column="his_filing_user_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="uploadStatus"    column="upload_status"    />
+        <result property="printStatus"    column="print_status"    />
+        <result property="borrowStatus"    column="borrow_status"    />
+        <result property="sealTime"    column="seal_time"    />
+        <result property="sealUserId"    column="seal_user_id"    />
+        <result property="sealStatus"    column="seal_status"    />
+        <result property="sourceId"    column="source_id"    />
+        <result property="primaryDiagnosisCode"    column="primary_diagnosis_code"    />
+        <result property="primaryDiagnosisName"    column="primary_diagnosis_name"    />
+        <result property="tcmPrimaryDiagnosisCode"    column="tcm_primary_diagnosis_code"    />
+        <result property="tcmPrimaryDiagnosisName"    column="tcm_primary_diagnosis_name"    />
+        <result property="secondaryDiagnosisCodes"    column="secondary_diagnosis_codes"    />
+        <result property="secondaryDiagnosisNames"    column="secondary_diagnosis_names"    />
+        <result property="outpatientDiagnosisCode"    column="outpatient_diagnosis_code"    />
+        <result property="admissionConditionCode"    column="admission_condition_code"    />
+    </resultMap>
+
+    <sql id="selectPatientBasicInfoVo">
+        select id, see_doctor_id, hospitalization_id, medical_record_num, hospitalization_count, name, healthcard_no, gender, AES_DECRYPT(phone,'2Zhlmcl!') as phone, contact_name, contact_relationship, AES_DECRYPT(contact_phone,'2Zhlmcl!') as contact_phone, nationality, id_card_type, AES_DECRYPT(id_card_num,'2Zhlmcl!') as id_card_num, admission_time, admission_department_id, admission_department_name, admission_ward_name, discharge_time, discharge_department_id, discharge_department_name, discharge_ward_name, discharge_method, record_status, current_step, local_filing_time, local_filing_user_id, local_filing_user_name, his_filing_time, his_filing_user_id, his_filing_user_name, create_time, upload_status, print_status, borrow_status, seal_time, seal_user_id, seal_status, source_id, primary_diagnosis_code, primary_diagnosis_name, tcm_primary_diagnosis_code, tcm_primary_diagnosis_name, secondary_diagnosis_codes, secondary_diagnosis_names, outpatient_diagnosis_code, admission_condition_code from patient_basic_info
+    </sql>
+
+    <select id="selectPatientBasicInfoList" parameterType="PatientBasicInfo" resultMap="PatientBasicInfoResult">
+        <include refid="selectPatientBasicInfoVo"/>
+        <where>  
+            <if test="seeDoctorId != null  and seeDoctorId != ''"> and see_doctor_id = #{seeDoctorId}</if>
+            <if test="hospitalizationId != null  and hospitalizationId != ''"> and hospitalization_id = #{hospitalizationId}</if>
+            <if test="medicalRecordNum != null  and medicalRecordNum != ''"> and medical_record_num = #{medicalRecordNum}</if>
+            <if test="hospitalizationCount != null "> and hospitalization_count = #{hospitalizationCount}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="healthcardNo != null  and healthcardNo != ''"> and healthcard_no = #{healthcardNo}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="idCardType != null  and idCardType != ''"> and id_card_type = #{idCardType}</if>
+            <if test="idCardNum != null  and idCardNum != ''"> and id_card_num = #{idCardNum}</if>
+            <if test="admissionTime != null "> and admission_time = #{admissionTime}</if>
+            <if test="admissionDepartmentId != null  and admissionDepartmentId != ''"> and admission_department_id = #{admissionDepartmentId}</if>
+            <if test="admissionDepartmentName != null  and admissionDepartmentName != ''"> and admission_department_name like concat('%', #{admissionDepartmentName}, '%')</if>
+            <if test="admissionWardName != null  and admissionWardName != ''"> and admission_ward_name like concat('%', #{admissionWardName}, '%')</if>
+            <if test="dischargeTime != null "> and discharge_time = #{dischargeTime}</if>
+            <if test="dischargeDepartmentId != null  and dischargeDepartmentId != ''"> and discharge_department_id = #{dischargeDepartmentId}</if>
+            <if test="dischargeDepartmentName != null  and dischargeDepartmentName != ''"> and discharge_department_name like concat('%', #{dischargeDepartmentName}, '%')</if>
+            <if test="dischargeWardName != null  and dischargeWardName != ''"> and discharge_ward_name like concat('%', #{dischargeWardName}, '%')</if>
+            <if test="dischargeMethod != null  and dischargeMethod != ''"> and discharge_method = #{dischargeMethod}</if>
+            <if test="recordStatus != null  and recordStatus != ''"> and record_status = #{recordStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectPatientBasicInfoById" parameterType="String" resultMap="PatientBasicInfoResult">
+        <include refid="selectPatientBasicInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPatientBasicInfo" parameterType="PatientBasicInfo">
+        insert into patient_basic_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="seeDoctorId != null">see_doctor_id,</if>
+            <if test="hospitalizationId != null">hospitalization_id,</if>
+            <if test="medicalRecordNum != null">medical_record_num,</if>
+            <if test="hospitalizationCount != null">hospitalization_count,</if>
+            <if test="name != null">name,</if>
+            <if test="healthcardNo != null">healthcard_no,</if>
+            <if test="gender != null">gender,</if>
+            <if test="phone != null">phone,</if>
+            <if test="contactName != null">contact_name,</if>
+            <if test="contactRelationship != null">contact_relationship,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="nationality != null">nationality,</if>
+            <if test="idCardType != null">id_card_type,</if>
+            <if test="idCardNum != null">id_card_num,</if>
+            <if test="admissionTime != null">admission_time,</if>
+            <if test="admissionDepartmentId != null">admission_department_id,</if>
+            <if test="admissionDepartmentName != null">admission_department_name,</if>
+            <if test="admissionWardName != null">admission_ward_name,</if>
+            <if test="dischargeTime != null">discharge_time,</if>
+            <if test="dischargeDepartmentId != null">discharge_department_id,</if>
+            <if test="dischargeDepartmentName != null">discharge_department_name,</if>
+            <if test="dischargeWardName != null">discharge_ward_name,</if>
+            <if test="dischargeMethod != null">discharge_method,</if>
+            <if test="recordStatus != null">record_status,</if>
+            <if test="currentStep != null">current_step,</if>
+            <if test="localFilingTime != null">local_filing_time,</if>
+            <if test="localFilingUserId != null">local_filing_user_id,</if>
+            <if test="localFilingUserName != null">local_filing_user_name,</if>
+            <if test="hisFilingTime != null">his_filing_time,</if>
+            <if test="hisFilingUserId != null">his_filing_user_id,</if>
+            <if test="hisFilingUserName != null">his_filing_user_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="uploadStatus != null">upload_status,</if>
+            <if test="printStatus != null">print_status,</if>
+            <if test="borrowStatus != null">borrow_status,</if>
+            <if test="sealTime != null">seal_time,</if>
+            <if test="sealUserId != null">seal_user_id,</if>
+            <if test="sealStatus != null">seal_status,</if>
+            <if test="sourceId != null">source_id,</if>
+            <if test="primaryDiagnosisCode != null">primary_diagnosis_code,</if>
+            <if test="primaryDiagnosisName != null">primary_diagnosis_name,</if>
+            <if test="tcmPrimaryDiagnosisCode != null">tcm_primary_diagnosis_code,</if>
+            <if test="tcmPrimaryDiagnosisName != null">tcm_primary_diagnosis_name,</if>
+            <if test="secondaryDiagnosisCodes != null">secondary_diagnosis_codes,</if>
+            <if test="secondaryDiagnosisNames != null">secondary_diagnosis_names,</if>
+            <if test="outpatientDiagnosisCode != null">outpatient_diagnosis_code,</if>
+            <if test="admissionConditionCode != null">admission_condition_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="seeDoctorId != null">#{seeDoctorId},</if>
+            <if test="hospitalizationId != null">#{hospitalizationId},</if>
+            <if test="medicalRecordNum != null">#{medicalRecordNum},</if>
+            <if test="hospitalizationCount != null">#{hospitalizationCount},</if>
+            <if test="name != null">#{name},</if>
+            <if test="healthcardNo != null">#{healthcardNo},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="contactName != null">#{contactName},</if>
+            <if test="contactRelationship != null">#{contactRelationship},</if>
+            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="nationality != null">#{nationality},</if>
+            <if test="idCardType != null">#{idCardType},</if>
+            <if test="idCardNum != null">#{idCardNum},</if>
+            <if test="admissionTime != null">#{admissionTime},</if>
+            <if test="admissionDepartmentId != null">#{admissionDepartmentId},</if>
+            <if test="admissionDepartmentName != null">#{admissionDepartmentName},</if>
+            <if test="admissionWardName != null">#{admissionWardName},</if>
+            <if test="dischargeTime != null">#{dischargeTime},</if>
+            <if test="dischargeDepartmentId != null">#{dischargeDepartmentId},</if>
+            <if test="dischargeDepartmentName != null">#{dischargeDepartmentName},</if>
+            <if test="dischargeWardName != null">#{dischargeWardName},</if>
+            <if test="dischargeMethod != null">#{dischargeMethod},</if>
+            <if test="recordStatus != null">#{recordStatus},</if>
+            <if test="currentStep != null">#{currentStep},</if>
+            <if test="localFilingTime != null">#{localFilingTime},</if>
+            <if test="localFilingUserId != null">#{localFilingUserId},</if>
+            <if test="localFilingUserName != null">#{localFilingUserName},</if>
+            <if test="hisFilingTime != null">#{hisFilingTime},</if>
+            <if test="hisFilingUserId != null">#{hisFilingUserId},</if>
+            <if test="hisFilingUserName != null">#{hisFilingUserName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="uploadStatus != null">#{uploadStatus},</if>
+            <if test="printStatus != null">#{printStatus},</if>
+            <if test="borrowStatus != null">#{borrowStatus},</if>
+            <if test="sealTime != null">#{sealTime},</if>
+            <if test="sealUserId != null">#{sealUserId},</if>
+            <if test="sealStatus != null">#{sealStatus},</if>
+            <if test="sourceId != null">#{sourceId},</if>
+            <if test="primaryDiagnosisCode != null">#{primaryDiagnosisCode},</if>
+            <if test="primaryDiagnosisName != null">#{primaryDiagnosisName},</if>
+            <if test="tcmPrimaryDiagnosisCode != null">#{tcmPrimaryDiagnosisCode},</if>
+            <if test="tcmPrimaryDiagnosisName != null">#{tcmPrimaryDiagnosisName},</if>
+            <if test="secondaryDiagnosisCodes != null">#{secondaryDiagnosisCodes},</if>
+            <if test="secondaryDiagnosisNames != null">#{secondaryDiagnosisNames},</if>
+            <if test="outpatientDiagnosisCode != null">#{outpatientDiagnosisCode},</if>
+            <if test="admissionConditionCode != null">#{admissionConditionCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePatientBasicInfo" parameterType="PatientBasicInfo">
+        update patient_basic_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="seeDoctorId != null">see_doctor_id = #{seeDoctorId},</if>
+            <if test="hospitalizationId != null">hospitalization_id = #{hospitalizationId},</if>
+            <if test="medicalRecordNum != null">medical_record_num = #{medicalRecordNum},</if>
+            <if test="hospitalizationCount != null">hospitalization_count = #{hospitalizationCount},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="healthcardNo != null">healthcard_no = #{healthcardNo},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="contactName != null">contact_name = #{contactName},</if>
+            <if test="contactRelationship != null">contact_relationship = #{contactRelationship},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="nationality != null">nationality = #{nationality},</if>
+            <if test="idCardType != null">id_card_type = #{idCardType},</if>
+            <if test="idCardNum != null">id_card_num = #{idCardNum},</if>
+            <if test="admissionTime != null">admission_time = #{admissionTime},</if>
+            <if test="admissionDepartmentId != null">admission_department_id = #{admissionDepartmentId},</if>
+            <if test="admissionDepartmentName != null">admission_department_name = #{admissionDepartmentName},</if>
+            <if test="admissionWardName != null">admission_ward_name = #{admissionWardName},</if>
+            <if test="dischargeTime != null">discharge_time = #{dischargeTime},</if>
+            <if test="dischargeDepartmentId != null">discharge_department_id = #{dischargeDepartmentId},</if>
+            <if test="dischargeDepartmentName != null">discharge_department_name = #{dischargeDepartmentName},</if>
+            <if test="dischargeWardName != null">discharge_ward_name = #{dischargeWardName},</if>
+            <if test="dischargeMethod != null">discharge_method = #{dischargeMethod},</if>
+            <if test="recordStatus != null">record_status = #{recordStatus},</if>
+            <if test="currentStep != null">current_step = #{currentStep},</if>
+            <if test="localFilingTime != null">local_filing_time = #{localFilingTime},</if>
+            <if test="localFilingUserId != null">local_filing_user_id = #{localFilingUserId},</if>
+            <if test="localFilingUserName != null">local_filing_user_name = #{localFilingUserName},</if>
+            <if test="hisFilingTime != null">his_filing_time = #{hisFilingTime},</if>
+            <if test="hisFilingUserId != null">his_filing_user_id = #{hisFilingUserId},</if>
+            <if test="hisFilingUserName != null">his_filing_user_name = #{hisFilingUserName},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="uploadStatus != null">upload_status = #{uploadStatus},</if>
+            <if test="printStatus != null">print_status = #{printStatus},</if>
+            <if test="borrowStatus != null">borrow_status = #{borrowStatus},</if>
+            <if test="sealTime != null">seal_time = #{sealTime},</if>
+            <if test="sealUserId != null">seal_user_id = #{sealUserId},</if>
+            <if test="sealStatus != null">seal_status = #{sealStatus},</if>
+            <if test="sourceId != null">source_id = #{sourceId},</if>
+            <if test="primaryDiagnosisCode != null">primary_diagnosis_code = #{primaryDiagnosisCode},</if>
+            <if test="primaryDiagnosisName != null">primary_diagnosis_name = #{primaryDiagnosisName},</if>
+            <if test="tcmPrimaryDiagnosisCode != null">tcm_primary_diagnosis_code = #{tcmPrimaryDiagnosisCode},</if>
+            <if test="tcmPrimaryDiagnosisName != null">tcm_primary_diagnosis_name = #{tcmPrimaryDiagnosisName},</if>
+            <if test="secondaryDiagnosisCodes != null">secondary_diagnosis_codes = #{secondaryDiagnosisCodes},</if>
+            <if test="secondaryDiagnosisNames != null">secondary_diagnosis_names = #{secondaryDiagnosisNames},</if>
+            <if test="outpatientDiagnosisCode != null">outpatient_diagnosis_code = #{outpatientDiagnosisCode},</if>
+            <if test="admissionConditionCode != null">admission_condition_code = #{admissionConditionCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePatientBasicInfoById" parameterType="String">
+        delete from patient_basic_info where id = #{id}
+    </delete>
+
+    <delete id="deletePatientBasicInfoByIds" parameterType="String">
+        delete from patient_basic_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

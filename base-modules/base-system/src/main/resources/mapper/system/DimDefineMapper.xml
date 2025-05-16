@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.base.system.mapper.DimDefineMapper">
+    
+    <resultMap type="DimDefine" id="DimDefineResult">
+        <result property="dimId"    column="dim_id"    />
+        <result property="dimName"    column="dim_name"    />
+        <result property="dimIdCol"    column="dim_id_col"    />
+        <result property="dimKeyCol"    column="dim_key_col"    />
+        <result property="dimValueCol"    column="dim_value_col"    />
+        <result property="dimOrderCol"    column="dim_order_col"    />
+        <result property="dimSortDirection"    column="dim_sort_direction"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="relCol"    column="rel_col"    />
+        <result property="dimSql"    column="dim_sql"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isValid"    column="is_valid"    />
+    </resultMap>
+
+    <sql id="selectDimDefineVo">
+        select dim_id, dim_name, dim_id_col, dim_key_col, dim_value_col, dim_order_col, dim_sort_direction, parent_id, rel_col, dim_sql, create_time, is_valid from t_dim_define
+    </sql>
+
+    <select id="selectDimDefineList" parameterType="DimDefine" resultMap="DimDefineResult">
+        <include refid="selectDimDefineVo"/>
+        <where>  
+            <if test="dimName != null  and dimName != ''"> and dim_name like concat('%', #{dimName}, '%')</if>
+            <if test="dimIdCol != null  and dimIdCol != ''"> and dim_id_col = #{dimIdCol}</if>
+            <if test="dimKeyCol != null  and dimKeyCol != ''"> and dim_key_col = #{dimKeyCol}</if>
+            <if test="dimValueCol != null  and dimValueCol != ''"> and dim_value_col = #{dimValueCol}</if>
+            <if test="dimOrderCol != null  and dimOrderCol != ''"> and dim_order_col = #{dimOrderCol}</if>
+            <if test="dimSortDirection != null  and dimSortDirection != ''"> and dim_sort_direction = #{dimSortDirection}</if>
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+            <if test="relCol != null  and relCol != ''"> and rel_col = #{relCol}</if>
+            <if test="dimSql != null  and dimSql != ''"> and dim_sql = #{dimSql}</if>
+            <if test="isValid != null "> and is_valid = #{isValid}</if>
+        </where>
+    </select>
+    
+    <select id="selectDimDefineByDimId" parameterType="String" resultMap="DimDefineResult">
+        <include refid="selectDimDefineVo"/>
+        where dim_id = #{dimId}
+    </select>
+
+    <insert id="insertDimDefine" parameterType="DimDefine">
+        insert into t_dim_define
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dimId != null">dim_id,</if>
+            <if test="dimName != null">dim_name,</if>
+            <if test="dimIdCol != null">dim_id_col,</if>
+            <if test="dimKeyCol != null">dim_key_col,</if>
+            <if test="dimValueCol != null">dim_value_col,</if>
+            <if test="dimOrderCol != null">dim_order_col,</if>
+            <if test="dimSortDirection != null">dim_sort_direction,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="relCol != null">rel_col,</if>
+            <if test="dimSql != null">dim_sql,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="isValid != null">is_valid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dimId != null">#{dimId},</if>
+            <if test="dimName != null">#{dimName},</if>
+            <if test="dimIdCol != null">#{dimIdCol},</if>
+            <if test="dimKeyCol != null">#{dimKeyCol},</if>
+            <if test="dimValueCol != null">#{dimValueCol},</if>
+            <if test="dimOrderCol != null">#{dimOrderCol},</if>
+            <if test="dimSortDirection != null">#{dimSortDirection},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="relCol != null">#{relCol},</if>
+            <if test="dimSql != null">#{dimSql},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="isValid != null">#{isValid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDimDefine" parameterType="DimDefine">
+        update t_dim_define
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dimName != null">dim_name = #{dimName},</if>
+            <if test="dimIdCol != null">dim_id_col = #{dimIdCol},</if>
+            <if test="dimKeyCol != null">dim_key_col = #{dimKeyCol},</if>
+            <if test="dimValueCol != null">dim_value_col = #{dimValueCol},</if>
+            <if test="dimOrderCol != null">dim_order_col = #{dimOrderCol},</if>
+            <if test="dimSortDirection != null">dim_sort_direction = #{dimSortDirection},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="relCol != null">rel_col = #{relCol},</if>
+            <if test="dimSql != null">dim_sql = #{dimSql},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="isValid != null">is_valid = #{isValid},</if>
+        </trim>
+        where dim_id = #{dimId}
+    </update>
+
+    <delete id="deleteDimDefineByDimId" parameterType="String">
+        delete from t_dim_define where dim_id = #{dimId}
+    </delete>
+
+    <delete id="deleteDimDefineByDimIds" parameterType="String">
+        delete from t_dim_define where dim_id in 
+        <foreach item="dimId" collection="array" open="(" separator="," close=")">
+            #{dimId}
+        </foreach>
+    </delete>
+</mapper>
