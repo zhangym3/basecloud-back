@@ -2,6 +2,7 @@ package com.base.system.service;
 
 import java.util.List;
 import com.base.system.domain.PatientBasicInfo;
+import com.base.system.domain.PatientImgInfo;
 
 /**
  * baseinfoService接口
@@ -58,4 +59,6 @@ public interface IPatientBasicInfoService
      * @return 结果
      */
     public int deletePatientBasicInfoById(String id);
+
+
 }

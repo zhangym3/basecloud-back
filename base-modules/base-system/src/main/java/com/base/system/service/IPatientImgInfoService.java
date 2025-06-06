@@ -67,5 +67,8 @@ public interface IPatientImgInfoService
 
 
     public List<PatientImgInfo> listDataByImgIds(String seeDoctorId, List<String> ids);
-
+    public String createPdf(List<PatientImgInfo> images,
+                                            String watermarkText,
+                                            String bucket,
+                                            String objectName) throws Exception;
 }

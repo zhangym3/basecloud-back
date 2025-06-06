@@ -65,12 +65,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             a.source_id,
             a.is_valid,b.classification_name
         FROM
-            patient_img_info  a LEFT JOIN t_classification b on a.classification_id =b.id
+            patient_img_info  a
+                LEFT JOIN t_classification b on a.classification_id =b.id
+                LEFT JOIN t_classification c on b.parent_id =c.id
         where see_doctor_id = #{seeDoctorId}
 
-        order  by sortnum
-
-
+        order by c.sortnum,b.sortnum
     </select>
 
     <select id="selectPatientImgInfoByClassificationIds" resultMap="PatientImgInfoResult">
@@ -148,14 +148,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="listDataByImgIds" resultMap="PatientImgInfoResult">
-        SELECT * from patient_img_info a
+        SELECT
+        a.id,
+        a.see_doctor_id,
+        a.bucket,
+        a.obj_name,
+        a.classification_id,
+        a.data_id,
+        a.sortnum,
+        a.create_time,
+        a.ocr_str,
+        a.receive_id,
+        a.is_auto,
+        a.is_encrypted,
+        a.source_id,
+        a.is_valid,b.classification_name
+        FROM patient_img_info a
         inner join (
-            <foreach collection="ids" item="item" index="idx" separator="union all">
-                select #{idx} as sornum,#{item} as id
-            </foreach>
-        ) b on a.id = b.id
-        where 1=1
-        and a.see_doctor_id = #{seeDoctorId}
-        order by b.sornum
+        <foreach item="item" index="index" collection="ids" separator=" union all ">
+        select #{index} as sornum,#{item} as id
+        </foreach>
+        ) d on a.id = d.id
+        LEFT JOIN t_classification b on a.classification_id =b.id
+        LEFT JOIN t_classification c on b.parent_id =c.id
+        where a.see_doctor_id = #{seeDoctorId}
+        order by c.sortnum,b.sortnum
     </select>
 </mapper>

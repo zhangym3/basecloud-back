@@ -6,6 +6,7 @@ import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
+import com.base.common.core.utils.uuid.UUID;
 import com.base.system.domain.Classification;
 import com.base.system.domain.vo.ClassificationTreeVo;
 import com.base.system.service.IClassificationService;
@@ -167,5 +168,18 @@ public class PatientImgInfoController extends BaseController
         });
         return success(imgs);
 
+    }
+    @GetMapping("/getPrintLinkByImgIds")
+    public AjaxResult getPrintLinkByImgIds(String seeDoctorId, String ids){
+
+        List<PatientImgInfo> list = patientImgInfoService.listDataByImgIds(seeDoctorId,Arrays.asList(ids.split(",")));
+
+        try {
+            String url = patientImgInfoService.createPdf(list,null,"print", UUID.randomUUID().toString() + ".pdf");
+
+            return AjaxResult.success(url);
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        }
     }
 }

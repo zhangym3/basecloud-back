@@ -31,13 +31,13 @@ public class WechatPayController {
     private WxPayProperties wxPayProperties;
 
     @GetMapping("/nativePay")
-    public Object nativePay(@RequestParam("orderNumber") String orderNumber) {
+    public Object nativePay(@RequestParam("orderNumber") String orderNumber,@RequestParam("totalFee") double totalFee) {
         //todo 业务操作-根据订单编号查询订单信息
         //将订单信息中的数据存到WxPayDTO
         WxPayDTO payDTO = new WxPayDTO();
         payDTO.setBody("商品描述");
         //订单总金额，单位为分
-        payDTO.setTotalFee(1);
+        payDTO.setTotalFee(Double.valueOf(totalFee*100).intValue());
         //支付回调地址
         payDTO.setNotifyUrl(wxPayProperties.getNotifyUrl());
         //商品订单编号
@@ -56,13 +56,13 @@ public class WechatPayController {
     }
 
     @GetMapping("/jsapiPay")
-    public Object jsapiPay(@RequestParam("orderNumber") String orderNumber) {
+    public Object jsapiPay(@RequestParam("orderNumber") String orderNumber,@RequestParam("totalFee") double totalFee) {
         //todo 业务操作-根据订单编号查询订单信息
         //将订单信息中的数据存到WxPayDTO
         WxPayDTO payDTO = new WxPayDTO();
         payDTO.setBody("商品描述");
         //订单总金额，单位为分
-        payDTO.setTotalFee(1);
+        payDTO.setTotalFee(Double.valueOf(totalFee*100).intValue());
         //支付回调地址
         payDTO.setNotifyUrl(wxPayProperties.getNotifyUrl());
         payDTO.setOutTradeNo("商户订单号");
@@ -83,14 +83,14 @@ public class WechatPayController {
     }
 
     @GetMapping("/h5Pay")
-    public Object h5Pay(@RequestParam("orderNumber") String orderNumber, HttpServletRequest request) {
+    public Object h5Pay(@RequestParam("orderNumber") String orderNumber, @RequestParam("totalFee") double totalFee,HttpServletRequest request) {
         //todo 业务操作-根据订单编号查询订单信息
 
         //将订单信息中的数据存到WxPayDTO
         WxPayDTO payDTO = new WxPayDTO();
         payDTO.setBody("商品描述");
         //订单总金额，单位为分
-        payDTO.setTotalFee(1);
+        payDTO.setTotalFee(Double.valueOf(totalFee*100).intValue());
         //支付回调地址
         payDTO.setNotifyUrl(wxPayProperties.getNotifyUrl());
         payDTO.setOutTradeNo("商户订单号");
@@ -112,14 +112,14 @@ public class WechatPayController {
     }
 
     @GetMapping("/micropay")
-    public Object micropay(@RequestParam("outTradeNo") String outTradeNo, @RequestParam("authCode") String authCode, HttpServletRequest request) {
+    public Object micropay(@RequestParam("outTradeNo") String outTradeNo, @RequestParam("authCode") String authCode,@RequestParam("totalFee") double totalFee, HttpServletRequest request) {
         //todo 业务操作-根据订单编号查询订单信息
 
         //将订单信息中的数据存到WxPayDTO
         WxPayDTO payDTO = new WxPayDTO();
         payDTO.setBody("商品描述");
         //订单总金额，单位为分
-        payDTO.setTotalFee(1);
+        payDTO.setTotalFee(Double.valueOf(totalFee*100).intValue());
         //支付回调地址
         payDTO.setNotifyUrl(wxPayProperties.getNotifyUrl());
         payDTO.setOutTradeNo(outTradeNo);

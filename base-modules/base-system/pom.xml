@@ -85,7 +85,16 @@
             <version>3.6.5</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.itextpdf/font-asian -->
 
+
+        <!-- https://mvnrepository.com/artifact/com.itextpdf/font-asian -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>font-asian</artifactId>
+            <version>7.1.15</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
