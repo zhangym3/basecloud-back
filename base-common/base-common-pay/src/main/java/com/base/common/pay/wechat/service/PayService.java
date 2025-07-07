@@ -5,9 +5,11 @@ import com.alibaba.fastjson2.JSONObject;
 import com.base.common.pay.wechat.bo.*;
 import com.github.binarywang.wxpay.bean.order.WxPayNativeOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayMicropayRequest;
+import com.github.binarywang.wxpay.bean.request.WxPayOrderReverseRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.bean.result.WxPayMicropayResult;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
@@ -52,13 +54,15 @@ public class PayService {
                     //JSAPI支付
                     return miniappPay(dto);
                 }else if (WxPayConstants.TradeType.MICROPAY.equals(tradeType)){
-                    //JSAPI支付
+                    //扫码支付
                     return micropay(dto);
                 }
             }
-        } catch (Exception e) {
+        } catch (WxPayException | InterruptedException e) {
             // 处理异常
-            e.printStackTrace();
+            System.out.println("##########################");
+            System.out.println(e.getMessage());
+            System.out.println("##########################");
             return null;
         }
         return null;
@@ -83,15 +87,58 @@ public class PayService {
         // 返回codeUrl给前端
         return codeUrl;
     }
-    public WxPayMicropayResult micropay(WxPayDTO dto) throws WxPayException {
+    public WxPayMicropayResult micropay(WxPayDTO dto) throws InterruptedException, WxPayException {
         WxPayMicropayRequest request = new WxPayMicropayRequest();
         request.setAuthCode(dto.getAuthCode());
         request.setBody(dto.getBody());
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTotalFee(dto.getTotalFee());
         request.setSpbillCreateIp(dto.getPayerClientIp());
-        return wxPayService.micropay(request);
+
+        WxPayMicropayResult payResult = null;
+        try {
+            payResult = wxPayService.micropay(request);
+            // 1. 立即成功，直接返回
+            if ("SUCCESS".equals(payResult.getResultCode()) && "SUCCESS".equals(payResult.getReturnCode())) {
+                return payResult;
+            }
+        } catch (WxPayException e) {
+
+            if ("USERPAYING".equals(payResult.getErrCode())) {
+                int maxQueryTimes = 6;
+                for (int i = 0; i < maxQueryTimes; i++) {
+                    Thread.sleep(3000); // 等3秒
+                    WxPayOrderQueryResult queryResult = wxPayService.queryOrder(null, request.getOutTradeNo());
+
+                    System.out.println(queryResult);
+                    if ("SUCCESS".equals(queryResult.getTradeState())) {
+                        // 组装 MicropayResult 返回（或直接用 queryResult 做业务）
+                        WxPayMicropayResult result = new WxPayMicropayResult();
+                        // 这里可以把 queryResult 的关键信息填充到 result
+                        result.setResultCode("SUCCESS");
+                        result.setOutTradeNo(request.getOutTradeNo());
+                        // ...其他属性按需赋值
+                        return result;
+                    } else if (!"USERPAYING".equals(queryResult.getTradeState())) {
+                        // 不是支付中，直接 break（如失败、已关闭等）
+                        break;
+                    }
+                }
+                // 查单失败后，建议撤单
+                WxPayOrderReverseRequest reverseRequest = new WxPayOrderReverseRequest();
+                reverseRequest.setOutTradeNo(request.getOutTradeNo());
+                wxPayService.reverseOrder(reverseRequest);
+                throw new WxPayException("支付超时或失败，已撤单");
+            }
+
+            throw new RuntimeException(e);
+        }
+
+
+        // 3. 其他错误
+        throw new WxPayException("微信刷卡支付失败：" + payResult.getErrCodeDes());
     }
+
     /**
      *
      * @param dto

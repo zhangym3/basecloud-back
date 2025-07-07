@@ -2,6 +2,7 @@ package com.base.common.pay.wechat.controller;
 import com.base.common.core.utils.DateUtils;
 import com.base.common.core.utils.StreamUtils;
 import com.alibaba.fastjson2.JSONObject;
+import com.base.common.core.utils.StringUtils;
 import com.base.common.pay.wechat.bo.WxPayDTO;
 import com.base.common.pay.wechat.properties.WxPayProperties;
 import com.base.common.pay.wechat.service.PayService;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,7 +114,7 @@ public class WechatPayController {
     }
 
     @GetMapping("/micropay")
-    public Object micropay(@RequestParam("outTradeNo") String outTradeNo, @RequestParam("authCode") String authCode,@RequestParam("totalFee") double totalFee, HttpServletRequest request) {
+    public Object micropay(@RequestParam(required = false, name = "outTradeNo") String outTradeNo, @RequestParam("authCode") String authCode,@RequestParam("totalFee") double totalFee, HttpServletRequest request) {
         //todo 业务操作-根据订单编号查询订单信息
 
         //将订单信息中的数据存到WxPayDTO
@@ -122,8 +124,14 @@ public class WechatPayController {
         payDTO.setTotalFee(Double.valueOf(totalFee*100).intValue());
         //支付回调地址
         payDTO.setNotifyUrl(wxPayProperties.getNotifyUrl());
-        payDTO.setOutTradeNo(outTradeNo);
+        if(StringUtils.isNotEmpty(outTradeNo)){
+            payDTO.setOutTradeNo(outTradeNo);
+        }else{
+            payDTO.setOutTradeNo(genOrderNo());
+        }
         payDTO.setAuthCode(authCode);
+
+        System.out.println(payDTO);
         //获取时间
         Date date = new Date();
         String timeStart = DateUtils.formatDateToString(date, "yyyyMMddHHmmss");
@@ -181,6 +189,12 @@ public class WechatPayController {
         }
 
         return null;
+    }
+    private  String genOrderNo() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String now = sdf.format(new Date());
+        int r = (int)(Math.random() * 10000);
+        return "ORD" + now + String.format("%04d", r);
     }
 
 }
