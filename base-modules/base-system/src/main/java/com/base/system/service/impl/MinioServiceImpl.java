@@ -50,7 +50,15 @@ public class MinioServiceImpl implements MinioService {
             if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
-            this.minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(stream, Long.valueOf(stream.available()), PutObjectArgs.MAX_PART_SIZE).contentType(contentType).build());
+            // InputStream.available() 仅表示在不阻塞情况下可读取的字节数，作为文件大小存在问题
+            // 当无法提前获取流的确切长度时，使用 -1 告知 SDK 采用分片上传模式
+            this.minioClient.putObject(
+                PutObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(objectName)
+                    .stream(stream, -1, PutObjectArgs.MAX_PART_SIZE)
+                    .contentType(contentType)
+                    .build());
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
